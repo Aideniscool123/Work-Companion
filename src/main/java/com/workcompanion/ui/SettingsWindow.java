@@ -44,13 +44,16 @@ public final class SettingsWindow extends JFrame {
         this.selected = character;
         this.currentSize = size;
         this.saveAction = saveAction;
+        // Window decoration and transparency must be configured before pack()
+        // creates the native peer. Calling setUndecorated afterward throws on
+        // Windows and leaves the tray's Settings command with no visible UI.
+        setUndecorated(true);
+        setBackground(new java.awt.Color(0, 0, 0, 0));
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         buildUi();
         pack();
         setLocationRelativeTo(owner);
         setAlwaysOnTop(true);
-        setUndecorated(true);
-        setBackground(new java.awt.Color(0, 0, 0, 0));
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     private void buildUi() {
