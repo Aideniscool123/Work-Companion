@@ -2,7 +2,6 @@ package com.workcompanion;
 
 import com.workcompanion.art.CharacterArtwork;
 import com.workcompanion.art.CharacterCatalog;
-import com.workcompanion.platform.StartupRegistration;
 import com.workcompanion.platform.WindowsTheme;
 import com.workcompanion.ui.CompanionWindow;
 import com.workcompanion.ui.SettingsWindow;
@@ -25,7 +24,6 @@ public final class WorkCompanion {
     }
 
     private void start() {
-        StartupRegistration.registerCurrentExecutable();
         artwork = new CharacterArtwork();
         Point savedLocation = new Point(preferences.getInt("x", -1), preferences.getInt("y", -1));
         int character = CharacterCatalog.at(preferences.getInt("character", 0)).ordinal();
