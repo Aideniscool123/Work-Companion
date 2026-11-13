@@ -9,10 +9,17 @@ if (!$jdk -or !(Test-Path (Join-Path $jdk 'bin\jpackage.exe'))) {
 if (!$jdk) { throw 'A full JDK 17 or newer with jpackage is required.' }
 $javac = Join-Path $jdk 'bin\javac.exe'
 $jpackage = Join-Path $jdk 'bin\jpackage.exe'
+$source = Join-Path $root 'src\main\java'
+$resources = Join-Path $root 'src\main\resources'
 $classes = Join-Path $root 'build\classes'
 New-Item -ItemType Directory -Force -Path $classes | Out-Null
-& $javac -encoding UTF-8 -d $classes (Join-Path $root 'src\main\java\com\workcompanion\WorkCompanion.java')
+Get-ChildItem $classes -File -Recurse | Remove-Item -Force
+$javaFiles = Get-ChildItem $source -Filter '*.java' -Recurse | Select-Object -ExpandProperty FullName
+& $javac -encoding UTF-8 -d $classes $javaFiles
 if ($LASTEXITCODE -ne 0) { throw 'Java compilation failed.' }
+if (Test-Path $resources) {
+    Copy-Item -Path (Join-Path $resources '*') -Destination $classes -Recurse -Force
+}
 $jar = Join-Path $root 'build\WorkCompanion.jar'
 & (Join-Path $jdk 'bin\jar.exe') --create --file $jar --main-class com.workcompanion.WorkCompanion -C $classes .
 if ($LASTEXITCODE -ne 0) { throw 'JAR creation failed.' }
